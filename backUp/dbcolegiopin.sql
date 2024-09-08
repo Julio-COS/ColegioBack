@@ -26,6 +26,14 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `usuario`
 --
+--TABLA DE PRUEBA*
+CREATE TABLE Aula (
+    idAula INT AUTO_INCREMENT PRIMARY KEY,
+    Seccion VARCHAR(50) NOT NULL,
+    Nivel VARCHAR(50) NOT NULL,
+    Grado_ac VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--FIN DE LA TABLA DE PRUEBA**
 
 CREATE TABLE `usuario` (
   `id` int(11) NOT NULL,
