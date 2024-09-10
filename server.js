@@ -158,6 +158,39 @@ app.post('/POSThorario', (req, res) => {
     );
 });
 
+//ALUMNO
+app.get('/GETalumnos', (req, res) => {
+    connection.query('SELECT * FROM alumno', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los horarios');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+//MATRICULA
+app.get('/GETmatricula', (req, res) => {
+    connection.query('SELECT * FROM matricula', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los horarios');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+//MATRICULAVACANCIA
+app.get('/GETmatriculaVacancia', (req, res) => {
+    connection.query('SELECT * FROM matriculaVacancia', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los horarios');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000');
