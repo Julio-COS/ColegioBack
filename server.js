@@ -162,35 +162,93 @@ app.post('/POSThorario', (req, res) => {
 app.get('/GETalumnos', (req, res) => {
     connection.query('SELECT * FROM alumno', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los horarios');
+            res.status(500).send('Error al obtener los alumnos');
             throw err;
         }
         res.send(results);
     });
+});
+
+app.post('/POSTalumno', (req, res) => {
+    const { nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono } = req.body;
+
+    if (!nombres|| !apeMaterno || !apePaterno || !dni || !fecharRegistro || !fechaNacimiento || !genero || !direccion || !telefono) {
+        return res.status(400).send('Todos los campos del horario son requeridos.');
+    }
+
+    connection.query(
+        'INSERT INTO alumno (nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono],
+        (err, results) => {
+            if (err) {
+                res.status(500).send('Error al agregar el alumno');
+                throw err;
+            }
+            res.status(201).send(`Alumno agregado exitosamente con ID: ${results.insertId}`);
+        }
+    );
 });
 
 //MATRICULA
 app.get('/GETmatricula', (req, res) => {
     connection.query('SELECT * FROM matricula', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los horarios');
+            res.status(500).send('Error al obtener las matriculas');
             throw err;
         }
         res.send(results);
     });
 });
 
+app.post('/POSTmatricula', (req, res) => {
+    const { idMVacancia, idEstudiante, fechaRegistro, estado } = req.body;
+
+    if (!idMVacancia|| !idEstudiante || !fechaRegistro || !estado) {
+        return res.status(400).send('Todos los campos de la matricula son requeridos.');
+    }
+
+    connection.query(
+        'INSERT INTO matricula (idMVacancia, idEstudiante, fechaRegistro, estado) VALUES (?, ?, ?, ?)',
+        [idMVacancia, idEstudiante, fechaRegistro, estado],
+        (err, results) => {
+            if (err) {
+                res.status(500).send('Error al agregar la matricula');
+                throw err;
+            }
+            res.status(201).send(`Matricula agregado exitosamente con ID: ${results.insertId}`);
+        }
+    );
+});
 //MATRICULAVACANCIA
 app.get('/GETmatriculaVacancia', (req, res) => {
     connection.query('SELECT * FROM matriculaVacancia', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los horarios');
+            res.status(500).send('Error al obtener los vacantes');
             throw err;
         }
         res.send(results);
     });
 });
 
+app.post('/POSTmatriculaVacancia', (req, res) => {
+    const { idAula, disponibilidadActual, disponibilidadTotal } = req.body;
+
+    if (!idAula|| !disponibilidadActual || !disponibilidadTotal) {
+        return res.status(400).send('Todos los campos de la vacancia son requeridos.');
+    }
+
+    connection.query(
+        'INSERT INTO matriculaVacancia (idAula, disponibilidadActual, disponibilidadTotal) VALUES (?, ?, ?)',
+        [idAula, disponibilidadActual, disponibilidadTotal],
+        (err, results) => {
+            if (err) {
+                res.status(500).send('Error al agregar la vacancia');
+                throw err;
+            }
+            res.status(201).send(`Vacancia agregada exitosamente con ID: ${results.insertId}`);
+        }
+    );
+});
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000');
