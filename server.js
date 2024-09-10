@@ -170,15 +170,15 @@ app.get('/GETalumnos', (req, res) => {
 });
 
 app.post('/POSTalumno', (req, res) => {
-    const { nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono } = req.body;
+    const { nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono } = req.body;
 
-    if (!nombres|| !apeMaterno || !apePaterno || !dni || !fecharRegistro || !fechaNacimiento || !genero || !direccion || !telefono) {
+    if (!nombres|| !apeMaterno || !apePaterno || !dni || !fechaRegistro || !fechaNacimiento || !genero || !direccion || !telefono) {
         return res.status(400).send('Todos los campos del horario son requeridos.');
     }
 
     connection.query(
-        'INSERT INTO alumno (nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [nombres, apeMaterno, apePaterno, dni, fecharRegistro, fechaNacimiento, genero, direccion, telefono],
+        'INSERT INTO Alumno (nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono],
         (err, results) => {
             if (err) {
                 res.status(500).send('Error al agregar el alumno');
@@ -203,7 +203,7 @@ app.get('/GETmatricula', (req, res) => {
 app.post('/POSTmatricula', (req, res) => {
     const { idMVacancia, idEstudiante, fechaRegistro, estado } = req.body;
 
-    if (!idMVacancia|| !idEstudiante || !fechaRegistro || !estado) {
+    if (!idMVacancia || !idEstudiante || !fechaRegistro || !estado) {
         return res.status(400).send('Todos los campos de la matricula son requeridos.');
     }
 
@@ -233,7 +233,7 @@ app.get('/GETmatriculaVacancia', (req, res) => {
 app.post('/POSTmatriculaVacancia', (req, res) => {
     const { idAula, disponibilidadActual, disponibilidadTotal } = req.body;
 
-    if (!idAula|| !disponibilidadActual || !disponibilidadTotal) {
+    if (!idAula || !disponibilidadTotal) {
         return res.status(400).send('Todos los campos de la vacancia son requeridos.');
     }
 
