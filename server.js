@@ -46,15 +46,15 @@ app.get('/GETdocentes', (req, res) => {
 });
 
 app.post('/POSTdocente', (req, res) => {
-    const { nombre, apellidoMaterno, apellidoPaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro } = req.body;
+    const { nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro } = req.body;
 
-    if (!nombre || !apellidoMaterno || !apellidoPaterno || !ciudad || !direccion || !tipoCargo || !dni || !fechaRegistro) {
+    if (!nombre || !apellidoPaterno || !apellidoMaterno || !ciudad || !direccion || !tipoCargo || !dni || !fechaRegistro) {
         return res.status(400).send('Todos los campos son requeridos.');
     }
 
     connection.query(
         'INSERT INTO Docente (nombre, apellidoMaterno, apellidoPaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [nombre, apellidoMaterno, apellidoPaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro],
+        [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro],
         (err, results) => {
             if (err) {
                 res.status(500).send('Error al agregar el docente');
@@ -107,7 +107,7 @@ app.get('/GETcursos', (req, res) => {
     });
 });
 
-app.post('/POScurso', (req, res) => {
+app.post('/POSTcurso', (req, res) => {
     const { nombre, descripcion } = req.body;
 
     if (!nombre || !descripcion) {
