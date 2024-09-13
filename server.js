@@ -151,6 +151,20 @@ app.put('/PUTcurso/:idCurso', (req, res) => {
     });
 });
 
+app.delete('/DELETEcurso/:idCurso', (req, res) => {
+    const { idCurso } = req.params;
+
+    const query = 'DELETE FROM curso WHERE idCurso = ?';
+
+    connection.query(query, [idCurso], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al eliminar el curso');
+            throw err;
+        }
+        res.send('Curso eliminado exitosamente');
+    });
+});
+
 //HORARIO
 app.get('/GEThorarios', (req, res) => {
     connection.query('SELECT * FROM horario', (err, results) => {
