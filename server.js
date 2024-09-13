@@ -96,6 +96,8 @@ app.post('/POSTaula', (req, res) => {
     );
 });
 
+
+
 //CURSO
 app.get('/GETcursos', (req, res) => {
     connection.query('SELECT * FROM curso', (err, results) => {
@@ -127,13 +129,35 @@ app.post('/POSTcurso', (req, res) => {
     );
 });
 
+app.put('/PUTcurso/:idCurso', (req, res) => {
+    const { idCurso } = req.params;
+    const { nombre, descripcion } = req.body;
+
+    const query = `
+        UPDATE curso 
+        SET nombre = ?, 
+            descripcion = ?
+        WHERE idCurso = ?
+    `;
+    
+    const values = [nombre, descripcion, idCurso];
+    
+    connection.query(query, values, (err, results) => {
+        if (err) {
+            res.status(500).send('Error al actualizar el curso');
+            throw err;
+        }
+        res.send('Curso actualizado exitosamente');
+    });
+});
+
 //HORARIO
 app.get('/GEThorarios', (req, res) => {
     connection.query('SELECT * FROM horario', (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener los horarios');
             throw err;
-        }
+        }   
         res.send(results);
     });
 });
