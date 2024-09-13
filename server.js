@@ -167,7 +167,17 @@ app.delete('/DELETEcurso/:idCurso', (req, res) => {
 
 //HORARIO
 app.get('/GEThorarios', (req, res) => {
-    connection.query('SELECT * FROM horario', (err, results) => {
+    connection.query(`SELECT 
+            DATE_FORMAT(h.Fecha_inicio, '%Y-%m-%d') as Fecha_inicio, 
+            DATE_FORMAT(h.Fecha_final, '%Y-%m-%d') as Fecha_finalFecha_final, 
+            h.hora_inicio, 
+            h.hora_final, 
+            CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
+            d.nombre as nombreDocente, c.nombre as nombreCurso 
+            FROM horario h 
+            INNER JOIN aula a ON h.idAula = a.idAula 
+            INNER JOIN docente d ON h.idDocente = d.idDocente 
+            INNER JOIN curso c ON h.idCurso = c.idCurso;`, (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener los horarios');
             throw err;
