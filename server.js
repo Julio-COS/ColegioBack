@@ -269,7 +269,10 @@ app.post('/POSTmatricula', (req, res) => {
 });
 //MATRICULAVACANCIA
 app.get('/GETmatriculaVacancia', (req, res) => {
-    connection.query('SELECT * FROM matriculaVacancia', (err, results) => {
+    connection.query(`SELECT CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
+            m.disponibilidadActual,m.disponibilidadTotal
+            FROM matriculaVacancia h 
+            INNER JOIN aula a ON h.idAula = a.idAula ;`, (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener los vacantes');
             throw err;
