@@ -168,8 +168,9 @@ app.delete('/DELETEcurso/:idCurso', (req, res) => {
 //HORARIO
 app.get('/GEThorarios', (req, res) => {
     connection.query(`SELECT 
+            h.idHorario,
             DATE_FORMAT(h.Fecha_inicio, '%Y-%m-%d') as Fecha_inicio, 
-            DATE_FORMAT(h.Fecha_final, '%Y-%m-%d') as Fecha_finalFecha_final, 
+            DATE_FORMAT(h.Fecha_final, '%Y-%m-%d') as Fecha_final, 
             h.hora_inicio, 
             h.hora_final, 
             CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
@@ -269,10 +270,14 @@ app.post('/POSTmatricula', (req, res) => {
 });
 //MATRICULAVACANCIA
 app.get('/GETmatriculaVacancia', (req, res) => {
-    connection.query(`SELECT CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
-            m.disponibilidadActual,m.disponibilidadTotal
-            FROM matriculaVacancia h 
-            INNER JOIN aula a ON h.idAula = a.idAula ;`, (err, results) => {
+    connection.query(`
+            SELECT 
+            m.idMVacancia,
+            CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
+            m.disponibilidadActual,
+            m.disponibilidadTotal
+            FROM matriculaVacancia m 
+            INNER JOIN aula a ON m.idAula = a.idAula`, (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener los vacantes');
             throw err;
