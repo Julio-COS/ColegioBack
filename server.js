@@ -109,6 +109,19 @@ app.get('/GETcursos', (req, res) => {
     });
 });
 
+app.get('/GETcurso/:idCurso', (req, res) => {
+    const { idCurso } = req.params;
+    const query ='SELECT * FROM curso WHERE idCurso = ?';
+
+    connection.query(query,[idCurso], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los cursos');
+            throw err;
+        }
+        res.send(results[0]);
+    });
+});
+
 app.post('/POSTcurso', (req, res) => {
     const { nombre, descripcion } = req.body;
 
