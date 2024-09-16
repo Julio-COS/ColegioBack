@@ -310,22 +310,8 @@ app.get('/GEThorarios', (req, res) => {
 });
 
 app.get('/GEThorario/:idHorario', (req, res) => {
-    const idHorario = req.params.idHorario;
-
-    connection.query(`
-        SELECT 
-            DATE_FORMAT(h.Fecha_inicio, '%Y-%m-%d') as Fecha_inicio, 
-            DATE_FORMAT(h.Fecha_final, '%Y-%m-%d') as Fecha_finalFecha_final, 
-            h.hora_inicio, 
-            h.hora_final, 
-            CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
-            d.nombre as nombreDocente, 
-            c.nombre as nombreCurso 
-        FROM horario h 
-        INNER JOIN aula a ON h.idAula = a.idAula 
-        INNER JOIN docente d ON h.idDocente = d.idDocente 
-        INNER JOIN curso c ON h.idCurso = c.idCurso
-        WHERE h.idHorario = ?;`, [idHorario], (err, results) => {
+    const {idHorario}= req.params;
+    connection.query(`SELECT * FROM horario WHERE idHorario = ?`, [idHorario], (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener el horario');
             throw err;
@@ -494,7 +480,7 @@ app.delete('/DELETEalumno/:idEstudiante', (req, res) => {
 });
 
 //MATRICULA
-app.get('/GETmatricula', (req, res) => {
+app.get('/GETmatriculas', (req, res) => {
     connection.query('SELECT * FROM matricula', (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener las matriculas');
@@ -583,7 +569,7 @@ app.delete('/DELETEmatricula/:idMatricula', (req, res) => {
 });
 
 //MATRICULAVACANCIA
-app.get('/GETmatriculaVacancia', (req, res) => {
+app.get('/GETmatriculaVacancias', (req, res) => {
     connection.query(`
             SELECT 
             m.idMVacancia,
