@@ -296,7 +296,8 @@ app.get('/GEThorarios', (req, res) => {
             h.hora_inicio, 
             h.hora_final, 
             CONCAT(a.gradoActual, ' - ', a.seccion, ' - ', a.nivel) as nombreAula, 
-            d.nombre as nombreDocente, c.nombre as nombreCurso 
+            CONCAT(d.nombre, ' ', d.apellidoPaterno, ' ',d.apellidoMaterno) as nombreDocente,
+            c.nombre as nombreCurso 
             FROM horario h 
             INNER JOIN aula a ON h.idAula = a.idAula 
             INNER JOIN docente d ON h.idDocente = d.idDocente 
@@ -481,7 +482,17 @@ app.delete('/DELETEalumno/:idEstudiante', (req, res) => {
 
 //MATRICULA
 app.get('/GETmatriculas', (req, res) => {
-    connection.query('SELECT * FROM matricula', (err, results) => {
+    connection.query(`
+            SELECT 
+            m.idMatricula,
+            CONCAT(a.gradoActual, '-', a.seccion, '-', a.nivel, ' | Actual:', mv.disponibilidadActual, ' | Total:', mv.disponibilidadTotal) as Vacancia, 
+            CONCAT(e.nombres,' ', e.apePaterno,' ', e.apeMaterno) as Estudiante, 
+            DATE_FORMAT(m.fechaRegistro, '%Y-%m-%d') as fechaRegistro,
+            m.estado
+            FROM matricula m 
+            INNER JOIN matriculavacancia mv ON m.idMVacancia = mv.idMVacancia
+            INNER JOIN alumno e ON m.idEstudiante = e.idEstudiante
+            INNER JOIN aula a ON mv.idAula = a.idAula;`, (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener las matriculas');
             throw err;
@@ -626,7 +637,7 @@ app.put('/PUTmatriculaVacancia/:idMVacancia', (req, res) => {
     const idMVacancia = req.params.idMVacancia;
     const { idAula, disponibilidadActual, disponibilidadTotal } = req.body;
 
-    if (!idAula || !disponibilidadActual || !disponibilidadTotal) {
+    if (!idAula || !disponibilidadTotal) {
         return res.status(400).send('Todos los campos son requeridos para actualizar la vacancia.');
     }
 
