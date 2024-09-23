@@ -678,6 +678,144 @@ app.delete('/DELETEmatriculaVacancia/:idMVacancia', (req, res) => {
     });
 });
 
+//APODERADO
+app.get('/GETapoderados', (req, res) => {
+    connection.query('SELECT * FROM Apoderado', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los apoderados');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+app.get('/GETapoderados', (req, res) => {
+    connection.query('SELECT * FROM Apoderado', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los apoderados');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+app.post('/POSTapoderado', (req, res) => {
+    const { nombres, apellidoP, apellidoM, dni, telefono, direccion } = req.body;
+
+    if (!nombres || !apellidoP || !apellidoM || !dni || !telefono || !direccion) {
+        return res.status(400).send('Todos los campos son requeridos');
+    }
+
+    connection.query('INSERT INTO Apoderado (nombres, apellidoP, apellidoM, dni, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)', 
+    [nombres, apellidoP, apellidoM, dni, telefono, direccion], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al agregar el apoderado');
+            throw err;
+        }
+        res.status(201).send(`Apoderado agregado con ID: ${results.insertId}`);
+    });
+});
+
+app.put('/PUTapoderado/:idApoderado', (req, res) => {
+    const idApoderado = req.params.idApoderado;
+    const { nombres, apellidoP, apellidoM, dni, telefono, direccion } = req.body;
+
+    connection.query('UPDATE Apoderado SET nombres = ?, apellidoP = ?, apellidoM = ?, dni = ?, telefono = ?, direccion = ? WHERE idApoderado = ?',
+    [nombres, apellidoP, apellidoM, dni, telefono, direccion, idApoderado], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al actualizar el apoderado');
+            throw err;
+        }
+        res.send('Apoderado actualizado correctamente');
+    });
+});
+
+app.delete('/DELETEapoderado/:idApoderado', (req, res) => {
+    const idApoderado = req.params.idApoderado;
+
+    connection.query('DELETE FROM Apoderado WHERE idApoderado = ?', [idApoderado], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al eliminar el apoderado');
+            throw err;
+        }
+        res.send('Apoderado eliminado correctamente');
+    });
+});
+
+//RELACION APODERADO
+app.get('/GETrelacionApoderados', (req, res) => {
+    connection.query('SELECT * FROM RelacionApoderado', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener las relaciones de apoderado');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+app.get('/GETrelacionApoderado/:idRelacionApoderado', (req, res) => {
+    const idRelacionApoderado = req.params.idRelacionApoderado;
+
+    connection.query('SELECT * FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener la relación de apoderado');
+            throw err;
+        }
+        if (results.length === 0) {
+            res.status(404).send('Relación de apoderado no encontrada');
+        } else {
+            res.send(results[0]);
+        }
+    });
+});
+
+app.post('/POSTrelacionApoderado', (req, res) => {
+    const { idEstudiante, idApoderado, tipoRelacion } = req.body;
+
+    if (!idEstudiante || !idApoderado || !tipoRelacion) {
+        return res.status(400).send('Todos los campos son requeridos');
+    }
+
+    connection.query('INSERT INTO RelacionApoderado (idEstudiante, idApoderado, tipoRelacion) VALUES (?, ?, ?)', 
+    [idEstudiante, idApoderado, tipoRelacion], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al agregar la relación de apoderado');
+            throw err;
+        }
+        res.status(201).send(`Relación de apoderado agregada con ID: ${results.insertId}`);
+    });
+});
+
+app.put('/PUTrelacionApoderado/:idRelacionApoderado', (req, res) => {
+    const idRelacionApoderado = req.params.idRelacionApoderado;
+    const { idEstudiante, idApoderado, tipoRelacion } = req.body;
+
+    connection.query('UPDATE RelacionApoderado SET idEstudiante = ?, idApoderado = ?, tipoRelacion = ? WHERE idRelacionApoderado = ?',
+    [idEstudiante, idApoderado, tipoRelacion, idRelacionApoderado], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al actualizar la relación de apoderado');
+            throw err;
+        }
+        res.send('Relación de apoderado actualizada correctamente');
+    });
+});
+
+app.delete('/DELETErelacionApoderado/:idRelacionApoderado', (req, res) => {
+    const idRelacionApoderado = req.params.idRelacionApoderado;
+
+    connection.query('DELETE FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al eliminar la relación de apoderado');
+            throw err;
+        }
+        res.send('Relación de apoderado eliminada correctamente');
+    });
+});
+
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000');
