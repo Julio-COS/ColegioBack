@@ -689,13 +689,19 @@ app.get('/GETapoderados', (req, res) => {
     });
 });
 
-app.get('/GETapoderados', (req, res) => {
-    connection.query('SELECT * FROM Apoderado', (err, results) => {
+app.get('/GETapoderado/:idApoderado', (req, res) => {
+    const idApoderado = req.params.idApoderado;
+
+    connection.query('SELECT * FROM Apoderado where idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los apoderados');
+            res.status(500).send('Error al obtener la relación de apoderado');
             throw err;
         }
-        res.send(results);
+        if (results.length === 0) {
+            res.status(404).send('Relación de apoderado no encontrada');
+        } else {
+        res.send(results[0]);
+        }
     });
 });
 
