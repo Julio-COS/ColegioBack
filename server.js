@@ -752,7 +752,16 @@ app.delete('/DELETEapoderado/:idApoderado', (req, res) => {
 
 //RELACION APODERADO
 app.get('/GETrelacionApoderados', (req, res) => {
-    connection.query('SELECT * FROM RelacionApoderado', (err, results) => {
+    connection.query(`
+            SELECT 
+            r.idRelacionApoderado,
+            CONCAT(e.nombres,' ', e.apePaterno,' ', e.apeMaterno) as Estudiante, 
+            CONCAT(a.nombres,' ', a.apellidoP,' ',a.apellidoM)as Apoderado,
+            r.tipoRelacion
+            FROM relacionapoderado r
+            INNER JOIN alumno e ON r.idEstudiante = e.idEstudiante
+            INNER JOIN apoderado a ON r.idApoderado = a.idApoderado`,
+            (err, results) => {
         if (err) {
             res.status(500).send('Error al obtener las relaciones de apoderado');
             throw err;
