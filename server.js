@@ -830,6 +830,148 @@ app.delete('/DELETErelacionApoderado/:idRelacionApoderado', (req, res) => {
         res.send('Relación de apoderado eliminada correctamente');
     });
 });
+//pagos
+app.get('/GETpagos', (req, res) => {
+    connection.query('SELECT * FROM Pago', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los pagos');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+app.get('/GETpago/:idPago', (req, res) => {
+    const idPago = req.params.idPago;
+
+    connection.query('SELECT * FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener el pago');
+            throw err;
+        }
+        if (results.length === 0) {
+            res.status(404).send('Pago no encontrado');
+        } else {
+            res.send(results[0]);
+        }
+    });
+});
+
+app.post('/POSTpago', (req, res) => {
+    const { idEstudiante, idComprobante, monto, tipoPago, estado } = req.body;
+
+    if (!idEstudiante || !idComprobante || !monto || !tipoPago || !estado) {
+        return res.status(400).send('Todos los campos son requeridos');
+    }
+
+    connection.query('INSERT INTO Pago (idEstudiante, idComprobante, monto, tipoPago, estado) VALUES (?, ?, ?, ?, ?)', 
+    [idEstudiante, idComprobante, monto, tipoPago, estado], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al agregar el pago');
+            throw err;
+        }
+        res.status(201).send(`Pago agregado con ID: ${results.insertId}`);
+    });
+});
+
+app.put('/PUTpago/:idPago', (req, res) => {
+    const idPago = req.params.idPago;
+    const { idEstudiante, idComprobante, monto, tipoPago, estado } = req.body;
+
+    connection.query('UPDATE Pago SET idEstudiante = ?, idComprobante = ?, monto = ?, tipoPago = ?, estado = ? WHERE idPago = ?',
+    [idEstudiante, idComprobante, monto, tipoPago, estado, idPago], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al actualizar el pago');
+            throw err;
+        }
+        res.send('Pago actualizado correctamente');
+    });
+});
+
+app.delete('/DELETEpago/:idPago', (req, res) => {
+    const idPago = req.params.idPago;
+
+    connection.query('DELETE FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al eliminar el pago');
+            throw err;
+        }
+        res.send('Pago eliminado correctamente');
+    });
+});
+
+app.get('/GETcomprobantePagos', (req, res) => {
+    connection.query('SELECT * FROM ComprobantePago', (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener los comprobantes de pago');
+            throw err;
+        }
+        res.send(results);
+    });
+});
+
+app.get('/GETcomprobantePago/:idComprobante', (req, res) => {
+    const idComprobante = req.params.idComprobante;
+
+    connection.query('SELECT * FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al obtener el comprobante de pago');
+            throw err;
+        }
+        if (results.length === 0) {
+            res.status(404).send('Comprobante de pago no encontrado');
+        } else {
+            res.send(results[0]);
+        }
+    });
+});
+
+app.post('/POSTcomprobantePago', (req, res) => {
+    const { fechaEmision, detalles } = req.body;
+
+    if (!fechaEmision || !detalles) {
+        return res.status(400).send('Todos los campos son requeridos');
+    }
+
+    connection.query('INSERT INTO ComprobantePago (fechaEmision, detalles) VALUES (?, ?)', 
+    [fechaEmision, detalles], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al agregar el comprobante de pago');
+            throw err;
+        }
+        res.status(201).send(`Comprobante de pago agregado con ID: ${results.insertId}`);
+    });
+});
+
+app.put('/PUTcomprobantePago/:idComprobante', (req, res) => {
+    const idComprobante = req.params.idComprobante;
+    const { fechaEmision, detalles } = req.body;
+
+    connection.query('UPDATE ComprobantePago SET fechaEmision = ?, detalles = ? WHERE idComprobante = ?',
+    [fechaEmision, detalles, idComprobante], 
+    (err, results) => {
+        if (err) {
+            res.status(500).send('Error al actualizar el comprobante de pago');
+            throw err;
+        }
+        res.send('Comprobante de pago actualizado correctamente');
+    });
+});
+
+app.delete('/DELETEcomprobantePago/:idComprobante', (req, res) => {
+    const idComprobante = req.params.idComprobante;
+
+    connection.query('DELETE FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
+        if (err) {
+            res.status(500).send('Error al eliminar el comprobante de pago');
+            throw err;
+        }
+        res.send('Comprobante de pago eliminado correctamente');
+    });
+});
 
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
