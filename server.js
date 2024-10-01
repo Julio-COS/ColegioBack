@@ -860,7 +860,7 @@ app.get('/GETpago/:idPago', (req, res) => {
 app.post('/POSTpago', (req, res) => {
     const { idEstudiante, idComprobante, monto, tipoPago, estado } = req.body;
 
-    if (!idEstudiante || !idComprobante || !monto || !tipoPago || !estado) {
+    if (!idEstudiante || !monto|| !estado) {
         return res.status(400).send('Todos los campos son requeridos');
     }
 
