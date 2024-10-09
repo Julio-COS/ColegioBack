@@ -24,13 +24,13 @@ connection.connect((err) => {
 
 //Asignacion base
 app.get('/', (req, res) => {
-    res.send('¡Bienvenido al servidor Node.js!');
+    res.json('¡Bienvenido al servidor Node.js!');
 });
 
 app.get('/GETusuario', (req, res) => {
     connection.query('SELECT * FROM usuario', (err, results) => {
         if (err) throw err;  // Maneja el error si ocurre
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -38,10 +38,10 @@ app.get('/GETusuario', (req, res) => {
 app.get('/GETdocentes', (req, res) => {
     connection.query('SELECT * FROM docente', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los docentes');
+            res.status(500).json('Error al obtener los docentes');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -50,13 +50,13 @@ app.get('/GETdocente/:idDocente', (req, res) => {
 
     connection.query('SELECT * FROM docente WHERE idDocente = ?', [idDocente], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el docente');
+            res.status(500).json('Error al obtener el docente');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Docente no encontrado');
+            res.status(404).json('Docente no encontrado');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -65,7 +65,7 @@ app.post('/POSTdocente', (req, res) => {
     const { nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro } = req.body;
 
     if (!nombre || !apellidoPaterno || !apellidoMaterno || !ciudad || !direccion || !tipoCargo || !dni || !fechaRegistro) {
-        return res.status(400).send('Todos los campos son requeridos.');
+        return res.status(400).json('Todos los campos son requeridos.');
     }
 
     connection.query(
@@ -73,10 +73,10 @@ app.post('/POSTdocente', (req, res) => {
         [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar el docente');
+                res.status(500).json('Error al agregar el docente');
                 throw err;
             }
-            res.status(201).send(`Docente agregado exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Docente agregado exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -93,10 +93,10 @@ app.put('/PUTdocente/:idDocente', (req, res) => {
 
     connection.query(query, [nombreDocente, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro, idDocente], (err, result) => {
         if (err) {
-            res.status(500).send('Error al actualizar el docente');
+            res.status(500).json('Error al actualizar el docente');
             throw err;
         }
-        res.send('Docente actualizado correctamente');
+        res.json('Docente actualizado correctamente');
     });
 });
 
@@ -107,10 +107,10 @@ app.delete('/DELETEdocente/:idDocente', (req, res) => {
 
     connection.query(query, [idDocente], (err, result) => {
         if (err) {
-            res.status(500).send('Error al eliminar el docente');
+            res.status(500).json('Error al eliminar el docente');
             throw err;
         }
-        res.send('Docente eliminado correctamente');
+        res.json('Docente eliminado correctamente');
     });
 });
 
@@ -119,10 +119,10 @@ app.delete('/DELETEdocente/:idDocente', (req, res) => {
 app.get('/GETaulas', (req, res) => {
     connection.query('SELECT * FROM aula', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener las aulas');
+            res.status(500).json('Error al obtener las aulas');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -131,13 +131,13 @@ app.get('/GETaula/:idAula', (req, res) => {
 
     connection.query('SELECT * FROM aula WHERE idAula = ?', [idAula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el aula');
+            res.status(500).json('Error al obtener el aula');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Aula no encontrada');
+            res.status(404).json('Aula no encontrada');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -146,7 +146,7 @@ app.post('/POSTaula', (req, res) => {
     const { seccion, nivel, gradoActual } = req.body;
 
     if (!seccion || !nivel || !gradoActual) {
-        return res.status(400).send('Sección, nivel y grado académico son requeridos.');
+        return res.status(400).json('Sección, nivel y grado académico son requeridos.');
     }
 
     connection.query(
@@ -154,10 +154,10 @@ app.post('/POSTaula', (req, res) => {
         [seccion, nivel, gradoActual],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar el aula');
+                res.status(500).json('Error al agregar el aula');
                 throw err;
             }
-            res.status(201).send(`Aula agregada exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Aula agregada exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -167,7 +167,7 @@ app.put('/PUTaula/:idAula', (req, res) => {
     const { seccion, nivel, gradoActual} = req.body;
 
     if ( !seccion || !nivel || !gradoActual) {
-        return res.status(400).send('Todos los campos son requeridos para actualizar el aula.');
+        return res.status(400).json('Todos los campos son requeridos para actualizar el aula.');
     }
 
     const query = `UPDATE aula SET 
@@ -178,13 +178,13 @@ app.put('/PUTaula/:idAula', (req, res) => {
 
     connection.query(query, [seccion, nivel, gradoActual, idAula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el aula');
+            res.status(500).json('Error al actualizar el aula');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Aula no encontrada');
+            res.status(404).json('Aula no encontrada');
         } else {
-            res.send('Aula actualizada correctamente');
+            res.json('Aula actualizada correctamente');
         }
     });
 });
@@ -196,13 +196,13 @@ app.delete('/DELETEaula/:idAula', (req, res) => {
 
     connection.query(query, [idAula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el aula');
+            res.status(500).json('Error al eliminar el aula');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Aula no encontrada');
+            res.status(404).json('Aula no encontrada');
         } else {
-            res.send('Aula eliminada correctamente');
+            res.json('Aula eliminada correctamente');
         }
     });
 });
@@ -211,10 +211,10 @@ app.delete('/DELETEaula/:idAula', (req, res) => {
 app.get('/GETcursos', (req, res) => {
     connection.query('SELECT * FROM curso', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los cursos');
+            res.status(500).json('Error al obtener los cursos');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -224,10 +224,10 @@ app.get('/GETcurso/:idCurso', (req, res) => {
 
     connection.query(query,[idCurso], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los cursos');
+            res.status(500).json('Error al obtener los cursos');
             throw err;
         }
-        res.send(results[0]);
+        res.json(results[0]);
     });
 });
 
@@ -235,7 +235,7 @@ app.post('/POSTcurso', (req, res) => {
     const { nombre, descripcion } = req.body;
 
     if (!nombre || !descripcion) {
-        return res.status(400).send('Nombre y descripción del curso son requeridos.');
+        return res.status(400).json('Nombre y descripción del curso son requeridos.');
     }
 
     connection.query(
@@ -243,10 +243,10 @@ app.post('/POSTcurso', (req, res) => {
         [nombre, descripcion],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar el curso');
+                res.status(500).json('Error al agregar el curso');
                 throw err;
             }
-            res.status(201).send(`Curso agregado exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Curso agregado exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -266,10 +266,10 @@ app.put('/PUTcurso/:idCurso', (req, res) => {
     
     connection.query(query, values, (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el curso');
+            res.status(500).json('Error al actualizar el curso');
             throw err;
         }
-        res.send('Curso actualizado exitosamente');
+        res.json('Curso actualizado exitosamente');
     });
 });
 
@@ -280,10 +280,10 @@ app.delete('/DELETEcurso/:idCurso', (req, res) => {
 
     connection.query(query, [idCurso], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el curso');
+            res.status(500).json('Error al eliminar el curso');
             throw err;
         }
-        res.send('Curso eliminado exitosamente');
+        res.json('Curso eliminado exitosamente');
     });
 });
 
@@ -303,10 +303,10 @@ app.get('/GEThorarios', (req, res) => {
             INNER JOIN docente d ON h.idDocente = d.idDocente 
             INNER JOIN curso c ON h.idCurso = c.idCurso;`, (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los horarios');
+            res.status(500).json('Error al obtener los horarios');
             throw err;
         }   
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -314,13 +314,13 @@ app.get('/GEThorario/:idHorario', (req, res) => {
     const {idHorario}= req.params;
     connection.query(`SELECT * FROM horario WHERE idHorario = ?`, [idHorario], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el horario');
+            res.status(500).json('Error al obtener el horario');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Horario no encontrado');
+            res.status(404).json('Horario no encontrado');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -329,7 +329,7 @@ app.post('/POSThorario', (req, res) => {
     const { idCurso, idDocente, idAula, Fecha_inicio, Fecha_final, hora_inicio, hora_final } = req.body;
 
     if (!idCurso || !idDocente|| !idAula || !Fecha_inicio || !Fecha_final || !hora_inicio || !hora_final) {
-        return res.status(400).send('Todos los campos del horario son requeridos.');
+        return res.status(400).json('Todos los campos del horario son requeridos.');
     }
 
     connection.query(
@@ -337,10 +337,10 @@ app.post('/POSThorario', (req, res) => {
         [idCurso, idDocente, idAula, Fecha_inicio, Fecha_final, hora_inicio, hora_final],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar el horario');
+                res.status(500).json('Error al agregar el horario');
                 throw err;
             }
-            res.status(201).send(`Horario agregado exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Horario agregado exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -361,13 +361,13 @@ app.put('/PUThorario/:idHorario', (req, res) => {
 
     connection.query(query, [Fecha_inicio, Fecha_final, hora_inicio, hora_final, idCurso, idDocente, idAula, idHorario], (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el horario');
+            res.status(500).json('Error al actualizar el horario');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Horario no encontrado');
+            res.status(404).json('Horario no encontrado');
         } else {
-            res.send('Horario actualizado correctamente');
+            res.json('Horario actualizado correctamente');
         }
     });
 });
@@ -379,10 +379,10 @@ app.delete('/DELETEhorario/:idHorario', (req, res) => {
 
     connection.query(query, [idHorario], (err, result) => {
         if (err) {
-            res.status(500).send('Error al eliminar el horario');
+            res.status(500).json('Error al eliminar el horario');
             throw err;
         }
-        res.send('Horario eliminado correctamente');
+        res.json('Horario eliminado correctamente');
     });
 });
 
@@ -390,10 +390,10 @@ app.delete('/DELETEhorario/:idHorario', (req, res) => {
 app.get('/GETalumnos', (req, res) => {
     connection.query('SELECT * FROM alumno', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los alumnos');
+            res.status(500).json('Error al obtener los alumnos');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -401,7 +401,7 @@ app.post('/POSTalumno', (req, res) => {
     const { nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono } = req.body;
 
     if (!nombres|| !apeMaterno || !apePaterno || !dni || !fechaRegistro || !fechaNacimiento || !genero || !direccion || !telefono) {
-        return res.status(400).send('Todos los campos del horario son requeridos.');
+        return res.status(400).json('Todos los campos del alumno son requeridos.');
     }
 
     connection.query(
@@ -409,10 +409,10 @@ app.post('/POSTalumno', (req, res) => {
         [nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar el alumno');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar el alumno'});
                 throw err;
             }
-            res.status(201).send(`Alumno agregado exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Alumno agregado exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -422,13 +422,13 @@ app.get('/GETalumno/:idEstudiante', (req, res) => {
 
     connection.query('SELECT * FROM alumno WHERE idEstudiante = ?', [idEstudiante], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el alumno');
+            res.status(500).json('Error al obtener el alumno');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Alumno no encontrado');
+            res.status(404).json('Alumno no encontrado');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -451,13 +451,13 @@ app.put('/PUTalumno/:idEstudiante', (req, res) => {
 
     connection.query(query, [nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono, idEstudiante], (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el alumno');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el alumno'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Alumno no encontrado');
+            res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
         } else {
-            res.send('Alumno actualizado correctamente');
+            res.json({ isSuccess: true, message:'Alumno actualizado correctamente'});
         }
     });
 });
@@ -469,13 +469,13 @@ app.delete('/DELETEalumno/:idEstudiante', (req, res) => {
 
     connection.query(query, [idEstudiante], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el alumno');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el alumno'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Alumno no encontrado');
+            res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
         } else {
-            res.send('Alumno eliminado correctamente');
+            res.json({ isSuccess: true, message:'Alumno eliminado correctamente'});
         }
     });
 });
@@ -494,10 +494,10 @@ app.get('/GETmatriculas', (req, res) => {
             INNER JOIN alumno e ON m.idEstudiante = e.idEstudiante
             INNER JOIN aula a ON mv.idAula = a.idAula;`, (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener las matriculas');
+            res.status(500).json('Error al obtener las matriculas');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -506,13 +506,13 @@ app.get('/GETmatricula/:idMatricula', (req, res) => {
 
     connection.query('SELECT * FROM matricula WHERE idMatricula = ?', [idMatricula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener la matricula');
+            res.status(500).json('Error al obtener la matricula');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Matrícula no encontrada');
+            res.status(404).json('Matrícula no encontrada');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -521,7 +521,7 @@ app.post('/POSTmatricula', (req, res) => {
     const { idMVacancia, idEstudiante, fechaRegistro, estado } = req.body;
 
     if (!idMVacancia || !idEstudiante || !fechaRegistro || !estado) {
-        return res.status(400).send('Todos los campos de la matricula son requeridos.');
+        return res.status(400).json('Todos los campos de la matricula son requeridos.');
     }
 
     connection.query(
@@ -529,10 +529,10 @@ app.post('/POSTmatricula', (req, res) => {
         [idMVacancia, idEstudiante, fechaRegistro, estado],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar la matricula');
+                res.status(500).json('Error al agregar la matricula');
                 throw err;
             }
-            res.status(201).send(`Matricula agregado exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Matricula agregado exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -550,13 +550,13 @@ app.put('/PUTmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMVacancia, idEstudiante, fechaRegistro, estado, idMatricula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar la matricula');
+            res.status(500).json('Error al actualizar la matricula');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Matricula no encontrada');
+            res.status(404).json('Matricula no encontrada');
         } else {
-            res.send('Matricula actualizada correctamente');
+            res.json('Matricula actualizada correctamente');
         }
     });
 });
@@ -568,13 +568,13 @@ app.delete('/DELETEmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMatricula], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar la matricula');
+            res.status(500).json('Error al eliminar la matricula');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Matricula no encontrada');
+            res.status(404).json('Matricula no encontrada');
         } else {
-            res.send('Matricula eliminada correctamente');
+            res.json('Matricula eliminada correctamente');
         }
     });
 });
@@ -590,10 +590,10 @@ app.get('/GETmatriculaVacancias', (req, res) => {
             FROM matriculaVacancia m 
             INNER JOIN aula a ON m.idAula = a.idAula`, (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los vacantes');
+            res.status(500).json('Error al obtener los vacantes');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -602,13 +602,13 @@ app.get('/GETmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query('SELECT * FROM matriculaVacancia WHERE idMVacancia = ?', [idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener la matricula vacante');
+            res.status(500).json('Error al obtener la matricula vacante');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Vacancia no encontrada');
+            res.status(404).json('Vacancia no encontrada');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -617,7 +617,7 @@ app.post('/POSTmatriculaVacancia', (req, res) => {
     const { idAula, disponibilidadActual, disponibilidadTotal } = req.body;
 
     if (!idAula || !disponibilidadTotal) {
-        return res.status(400).send('Todos los campos de la vacancia son requeridos.');
+        return res.status(400).json('Todos los campos de la vacancia son requeridos.');
     }
 
     connection.query(
@@ -625,10 +625,10 @@ app.post('/POSTmatriculaVacancia', (req, res) => {
         [idAula, disponibilidadActual, disponibilidadTotal],
         (err, results) => {
             if (err) {
-                res.status(500).send('Error al agregar la vacancia');
+                res.status(500).json('Error al agregar la vacancia');
                 throw err;
             }
-            res.status(201).send(`Vacancia agregada exitosamente con ID: ${results.insertId}`);
+            res.status(201).json({ isSuccess: true, message: `Vacancia agregada exitosamente con ID: ${results.insertId}`});
         }
     );
 });
@@ -638,7 +638,7 @@ app.put('/PUTmatriculaVacancia/:idMVacancia', (req, res) => {
     const { idAula, disponibilidadActual, disponibilidadTotal } = req.body;
 
     if (!idAula || !disponibilidadTotal) {
-        return res.status(400).send('Todos los campos son requeridos para actualizar la vacancia.');
+        return res.status(400).json('Todos los campos son requeridos para actualizar la vacancia.');
     }
 
     const query = `UPDATE matriculaVacancia SET 
@@ -649,13 +649,13 @@ app.put('/PUTmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idAula, disponibilidadActual, disponibilidadTotal, idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar la vacancia');
+            res.status(500).json('Error al actualizar la vacancia');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Vacancia no encontrada');
+            res.status(404).json('Vacancia no encontrada');
         } else {
-            res.send('Vacancia actualizada correctamente');
+            res.json('Vacancia actualizada correctamente');
         }
     });
 });
@@ -667,13 +667,13 @@ app.delete('/DELETEmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar la vacancia');
+            res.status(500).json('Error al eliminar la vacancia');
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).send('Vacancia no encontrada');
+            res.status(404).json('Vacancia no encontrada');
         } else {
-            res.send('Vacancia eliminada correctamente');
+            res.json('Vacancia eliminada correctamente');
         }
     });
 });
@@ -682,10 +682,10 @@ app.delete('/DELETEmatriculaVacancia/:idMVacancia', (req, res) => {
 app.get('/GETapoderados', (req, res) => {
     connection.query('SELECT * FROM Apoderado', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los apoderados');
+            res.status(500).json('Error al obtener los apoderados');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -694,13 +694,13 @@ app.get('/GETapoderado/:idApoderado', (req, res) => {
 
     connection.query('SELECT * FROM Apoderado where idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener la relación de apoderado');
+            res.status(500).json('Error al obtener la relación de apoderado');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Relación de apoderado no encontrada');
+            res.status(404).json('Relación de apoderado no encontrada');
         } else {
-        res.send(results[0]);
+        res.json(results[0]);
         }
     });
 });
@@ -709,17 +709,17 @@ app.post('/POSTapoderado', (req, res) => {
     const { nombres, apellidoP, apellidoM, dni, telefono, direccion } = req.body;
 
     if (!nombres || !apellidoP || !apellidoM || !dni || !telefono || !direccion) {
-        return res.status(400).send('Todos los campos son requeridos');
+        return res.status(400).json('Todos los campos son requeridos');
     }
 
     connection.query('INSERT INTO Apoderado (nombres, apellidoP, apellidoM, dni, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)', 
     [nombres, apellidoP, apellidoM, dni, telefono, direccion], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al agregar el apoderado');
+            res.status(500).json('Error al agregar el apoderado');
             throw err;
         }
-        res.status(201).send(`Apoderado agregado con ID: ${results.insertId}`);
+        res.status(201).json({ isSuccess: true, message: `Apoderado agregado con ID: ${results.insertId}`});
     });
 });
 
@@ -731,10 +731,10 @@ app.put('/PUTapoderado/:idApoderado', (req, res) => {
     [nombres, apellidoP, apellidoM, dni, telefono, direccion, idApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el apoderado');
+            res.status(500).json('Error al actualizar el apoderado');
             throw err;
         }
-        res.send('Apoderado actualizado correctamente');
+        res.json('Apoderado actualizado correctamente');
     });
 });
 
@@ -743,10 +743,10 @@ app.delete('/DELETEapoderado/:idApoderado', (req, res) => {
 
     connection.query('DELETE FROM Apoderado WHERE idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el apoderado');
+            res.status(500).json('Error al eliminar el apoderado');
             throw err;
         }
-        res.send('Apoderado eliminado correctamente');
+        res.json('Apoderado eliminado correctamente');
     });
 });
 
@@ -763,10 +763,10 @@ app.get('/GETrelacionApoderados', (req, res) => {
             INNER JOIN apoderado a ON r.idApoderado = a.idApoderado`,
             (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener las relaciones de apoderado');
+            res.status(500).json('Error al obtener las relaciones de apoderado');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -775,13 +775,13 @@ app.get('/GETrelacionApoderado/:idRelacionApoderado', (req, res) => {
 
     connection.query('SELECT * FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener la relación de apoderado');
+            res.status(500).json('Error al obtener la relación de apoderado');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Relación de apoderado no encontrada');
+            res.status(404).json('Relación de apoderado no encontrada');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -790,17 +790,17 @@ app.post('/POSTrelacionApoderado', (req, res) => {
     const { idEstudiante, idApoderado, tipoRelacion } = req.body;
 
     if (!idEstudiante || !idApoderado || !tipoRelacion) {
-        return res.status(400).send('Todos los campos son requeridos');
+        return res.status(400).json('Todos los campos son requeridos');
     }
 
     connection.query('INSERT INTO RelacionApoderado (idEstudiante, idApoderado, tipoRelacion) VALUES (?, ?, ?)', 
     [idEstudiante, idApoderado, tipoRelacion], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al agregar la relación de apoderado');
+            res.status(500).json('Error al agregar la relación de apoderado');
             throw err;
         }
-        res.status(201).send(`Relación de apoderado agregada con ID: ${results.insertId}`);
+        res.status(201).json({ isSuccess: true, message: `Relación de apoderado agregada con ID: ${results.insertId}`});
     });
 });
 
@@ -812,10 +812,10 @@ app.put('/PUTrelacionApoderado/:idRelacionApoderado', (req, res) => {
     [idEstudiante, idApoderado, tipoRelacion, idRelacionApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar la relación de apoderado');
+            res.status(500).json('Error al actualizar la relación de apoderado');
             throw err;
         }
-        res.send('Relación de apoderado actualizada correctamente');
+        res.json('Relación de apoderado actualizada correctamente');
     });
 });
 
@@ -824,20 +824,20 @@ app.delete('/DELETErelacionApoderado/:idRelacionApoderado', (req, res) => {
 
     connection.query('DELETE FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar la relación de apoderado');
+            res.status(500).json('Error al eliminar la relación de apoderado');
             throw err;
         }
-        res.send('Relación de apoderado eliminada correctamente');
+        res.json('Relación de apoderado eliminada correctamente');
     });
 });
 //pagos
 app.get('/GETpagos', (req, res) => {
     connection.query('SELECT * FROM Pago', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los pagos');
+            res.status(500).json('Error al obtener los pagos');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -846,13 +846,13 @@ app.get('/GETpago/:idPago', (req, res) => {
 
     connection.query('SELECT * FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el pago');
+            res.status(500).json('Error al obtener el pago');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Pago no encontrado');
+            res.status(404).json('Pago no encontrado');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -861,17 +861,17 @@ app.post('/POSTpago', (req, res) => {
     const { idEstudiante, idComprobante, monto, tipoPago, estado } = req.body;
 
     if (!idEstudiante || !monto|| !estado) {
-        return res.status(400).send('Todos los campos son requeridos');
+        return res.status(400).json('Todos los campos son requeridos');
     }
 
     connection.query('INSERT INTO Pago (idEstudiante, idComprobante, monto, tipoPago, estado) VALUES (?, ?, ?, ?, ?)', 
     [idEstudiante, idComprobante, monto, tipoPago, estado], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al agregar el pago');
+            res.status(500).json('Error al agregar el pago');
             throw err;
         }
-        res.status(201).send(`Pago agregado con ID: ${results.insertId}`);
+        res.status(201).json({ isSuccess: true, message: `Pago agregado con ID: ${results.insertId}`});
     });
 });
 
@@ -883,10 +883,10 @@ app.put('/PUTpago/:idPago', (req, res) => {
     [idEstudiante, idComprobante, monto, tipoPago, estado, idPago], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el pago');
+            res.status(500).json('Error al actualizar el pago');
             throw err;
         }
-        res.send('Pago actualizado correctamente');
+        res.json('Pago actualizado correctamente');
     });
 });
 
@@ -895,20 +895,20 @@ app.delete('/DELETEpago/:idPago', (req, res) => {
 
     connection.query('DELETE FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el pago');
+            res.status(500).json('Error al eliminar el pago');
             throw err;
         }
-        res.send('Pago eliminado correctamente');
+        res.json('Pago eliminado correctamente');
     });
 });
 
 app.get('/GETcomprobantePagos', (req, res) => {
     connection.query('SELECT * FROM ComprobantePago', (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener los comprobantes de pago');
+            res.status(500).json('Error al obtener los comprobantes de pago');
             throw err;
         }
-        res.send(results);
+        res.json(results);
     });
 });
 
@@ -917,13 +917,13 @@ app.get('/GETcomprobantePago/:idComprobante', (req, res) => {
 
     connection.query('SELECT * FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
         if (err) {
-            res.status(500).send('Error al obtener el comprobante de pago');
+            res.status(500).json('Error al obtener el comprobante de pago');
             throw err;
         }
         if (results.length === 0) {
-            res.status(404).send('Comprobante de pago no encontrado');
+            res.status(404).json('Comprobante de pago no encontrado');
         } else {
-            res.send(results[0]);
+            res.json(results[0]);
         }
     });
 });
@@ -932,17 +932,17 @@ app.post('/POSTcomprobantePago', (req, res) => {
     const { fechaEmision, detalles } = req.body;
 
     if (!fechaEmision || !detalles) {
-        return res.status(400).send('Todos los campos son requeridos');
+        return res.status(400).json('Todos los campos son requeridos');
     }
 
     connection.query('INSERT INTO ComprobantePago (fechaEmision, detalles) VALUES (?, ?)', 
     [fechaEmision, detalles], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al agregar el comprobante de pago');
+            res.status(500).json('Error al agregar el comprobante de pago');
             throw err;
         }
-        res.status(201).send(`Comprobante de pago agregado con ID: ${results.insertId}`);
+        res.status(201).json({ isSuccess: true, message: `Comprobante de pago agregado con ID: ${results.insertId}`});
     });
 });
 
@@ -954,10 +954,10 @@ app.put('/PUTcomprobantePago/:idComprobante', (req, res) => {
     [fechaEmision, detalles, idComprobante], 
     (err, results) => {
         if (err) {
-            res.status(500).send('Error al actualizar el comprobante de pago');
+            res.status(500).json('Error al actualizar el comprobante de pago');
             throw err;
         }
-        res.send('Comprobante de pago actualizado correctamente');
+        res.json('Comprobante de pago actualizado correctamente');
     });
 });
 
@@ -966,10 +966,10 @@ app.delete('/DELETEcomprobantePago/:idComprobante', (req, res) => {
 
     connection.query('DELETE FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
         if (err) {
-            res.status(500).send('Error al eliminar el comprobante de pago');
+            res.status(500).json('Error al eliminar el comprobante de pago');
             throw err;
         }
-        res.send('Comprobante de pago eliminado correctamente');
+        res.json('Comprobante de pago eliminado correctamente');
     });
 });
 
