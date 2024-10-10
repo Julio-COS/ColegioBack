@@ -73,7 +73,7 @@ app.post('/POSTdocente', (req, res) => {
         [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar el docente');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar el docente'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Docente agregado exitosamente con ID: ${results.insertId}`});
@@ -93,10 +93,14 @@ app.put('/PUTdocente/:idDocente', (req, res) => {
 
     connection.query(query, [nombreDocente, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro, idDocente], (err, result) => {
         if (err) {
-            res.status(500).json('Error al actualizar el docente');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el docente'});
             throw err;
         }
-        res.json('Docente actualizado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Docente no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Docente actualizado correctamente'});
+        }
     });
 });
 
@@ -107,10 +111,14 @@ app.delete('/DELETEdocente/:idDocente', (req, res) => {
 
     connection.query(query, [idDocente], (err, result) => {
         if (err) {
-            res.status(500).json('Error al eliminar el docente');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el docente'});
             throw err;
         }
-        res.json('Docente eliminado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Docente no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Docente eliminado correctamente'});
+        }
     });
 });
 
@@ -154,7 +162,7 @@ app.post('/POSTaula', (req, res) => {
         [seccion, nivel, gradoActual],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar el aula');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar aula'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Aula agregada exitosamente con ID: ${results.insertId}`});
@@ -178,13 +186,13 @@ app.put('/PUTaula/:idAula', (req, res) => {
 
     connection.query(query, [seccion, nivel, gradoActual, idAula], (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el aula');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el aula'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Aula no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Aula no encontrado'});
         } else {
-            res.json('Aula actualizada correctamente');
+            res.json({ isSuccess: true, message:'Aula actulizada correctamente'});
         }
     });
 });
@@ -196,13 +204,13 @@ app.delete('/DELETEaula/:idAula', (req, res) => {
 
     connection.query(query, [idAula], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar el aula');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el aula'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Aula no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Aula no encontrado'});
         } else {
-            res.json('Aula eliminada correctamente');
+            res.json({ isSuccess: true, message:'Aula eliminada correctamente'});
         }
     });
 });
@@ -243,7 +251,7 @@ app.post('/POSTcurso', (req, res) => {
         [nombre, descripcion],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar el curso');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar curso'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Curso agregado exitosamente con ID: ${results.insertId}`});
@@ -266,10 +274,14 @@ app.put('/PUTcurso/:idCurso', (req, res) => {
     
     connection.query(query, values, (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el curso');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el curso'});
             throw err;
         }
-        res.json('Curso actualizado exitosamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Curso no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Curso actualizado correctamente'});
+        }
     });
 });
 
@@ -280,10 +292,14 @@ app.delete('/DELETEcurso/:idCurso', (req, res) => {
 
     connection.query(query, [idCurso], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar el curso');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el curso'});
             throw err;
         }
-        res.json('Curso eliminado exitosamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Curso no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Curso eliminado correctamente'});
+        }
     });
 });
 
@@ -337,7 +353,7 @@ app.post('/POSThorario', (req, res) => {
         [idCurso, idDocente, idAula, Fecha_inicio, Fecha_final, hora_inicio, hora_final],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar el horario');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar el horario'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Horario agregado exitosamente con ID: ${results.insertId}`});
@@ -361,13 +377,13 @@ app.put('/PUThorario/:idHorario', (req, res) => {
 
     connection.query(query, [Fecha_inicio, Fecha_final, hora_inicio, hora_final, idCurso, idDocente, idAula, idHorario], (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el horario');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el horario'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Horario no encontrado');
+            res.status(404).json({ isSuccess: false, message:'Horario no encontrado'});
         } else {
-            res.json('Horario actualizado correctamente');
+            res.json({ isSuccess: true, message:'Horario actualizado correctamente'});
         }
     });
 });
@@ -379,10 +395,14 @@ app.delete('/DELETEhorario/:idHorario', (req, res) => {
 
     connection.query(query, [idHorario], (err, result) => {
         if (err) {
-            res.status(500).json('Error al eliminar el horario');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el horario'});
             throw err;
         }
-        res.json('Horario eliminado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Horario no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Horario eliminado correctamente'});
+        }
     });
 });
 
@@ -529,7 +549,7 @@ app.post('/POSTmatricula', (req, res) => {
         [idMVacancia, idEstudiante, fechaRegistro, estado],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar la matricula');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar matricula'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Matricula agregado exitosamente con ID: ${results.insertId}`});
@@ -550,13 +570,13 @@ app.put('/PUTmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMVacancia, idEstudiante, fechaRegistro, estado, idMatricula], (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar la matricula');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar matricula'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Matricula no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Matricula no encontrado'});
         } else {
-            res.json('Matricula actualizada correctamente');
+            res.json({ isSuccess: true, message:'Matricula actualizada correctamente'});
         }
     });
 });
@@ -568,13 +588,13 @@ app.delete('/DELETEmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMatricula], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar la matricula');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar la mnatricula'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Matricula no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Matricula no encontrado'});
         } else {
-            res.json('Matricula eliminada correctamente');
+            res.json({ isSuccess: true, message:'Matricula eliminado correctamente'});
         }
     });
 });
@@ -625,7 +645,7 @@ app.post('/POSTmatriculaVacancia', (req, res) => {
         [idAula, disponibilidadActual, disponibilidadTotal],
         (err, results) => {
             if (err) {
-                res.status(500).json('Error al agregar la vacancia');
+                res.status(500).json({ isSuccess: false, message:'Error al agregar el vacancia'});
                 throw err;
             }
             res.status(201).json({ isSuccess: true, message: `Vacancia agregada exitosamente con ID: ${results.insertId}`});
@@ -649,13 +669,13 @@ app.put('/PUTmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idAula, disponibilidadActual, disponibilidadTotal, idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar la vacancia');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar la vacancia'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Vacancia no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Vacancia no encontrado'});
         } else {
-            res.json('Vacancia actualizada correctamente');
+            res.json({ isSuccess: true, message:'Vacancia actualizada correctamente'});
         }
     });
 });
@@ -667,13 +687,13 @@ app.delete('/DELETEmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar la vacancia');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el vacancia'});
             throw err;
         }
         if (results.affectedRows === 0) {
-            res.status(404).json('Vacancia no encontrada');
+            res.status(404).json({ isSuccess: false, message:'Vacancia no encontrado'});
         } else {
-            res.json('Vacancia eliminada correctamente');
+            res.json({ isSuccess: true, message:'Vacancia eliminada correctamente'});
         }
     });
 });
@@ -716,7 +736,7 @@ app.post('/POSTapoderado', (req, res) => {
     [nombres, apellidoP, apellidoM, dni, telefono, direccion], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al agregar el apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al agregar el apoderado'});
             throw err;
         }
         res.status(201).json({ isSuccess: true, message: `Apoderado agregado con ID: ${results.insertId}`});
@@ -731,10 +751,14 @@ app.put('/PUTapoderado/:idApoderado', (req, res) => {
     [nombres, apellidoP, apellidoM, dni, telefono, direccion, idApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el apoderado'});
             throw err;
         }
-        res.json('Apoderado actualizado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Apoderado no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Apoderado actualizado correctamente'});
+        }
     });
 });
 
@@ -743,10 +767,14 @@ app.delete('/DELETEapoderado/:idApoderado', (req, res) => {
 
     connection.query('DELETE FROM Apoderado WHERE idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar el apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el apoderado'});
             throw err;
         }
-        res.json('Apoderado eliminado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Apoderado no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Apoderado eliminado correctamente'});
+        }
     });
 });
 
@@ -797,7 +825,7 @@ app.post('/POSTrelacionApoderado', (req, res) => {
     [idEstudiante, idApoderado, tipoRelacion], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al agregar la relación de apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al agregar la relacion de apoderado'});
             throw err;
         }
         res.status(201).json({ isSuccess: true, message: `Relación de apoderado agregada con ID: ${results.insertId}`});
@@ -812,10 +840,14 @@ app.put('/PUTrelacionApoderado/:idRelacionApoderado', (req, res) => {
     [idEstudiante, idApoderado, tipoRelacion, idRelacionApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar la relación de apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar la relacion de apoderado '});
             throw err;
         }
-        res.json('Relación de apoderado actualizada correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Relacion del apoderado no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Relacion de apoderado eliminado correctamente'});
+        }
     });
 });
 
@@ -824,10 +856,14 @@ app.delete('/DELETErelacionApoderado/:idRelacionApoderado', (req, res) => {
 
     connection.query('DELETE FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar la relación de apoderado');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar la relacion del apoderado'});
             throw err;
         }
-        res.json('Relación de apoderado eliminada correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Relacion no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Relacion del apoderado eliminado correctamente'});
+        }
     });
 });
 //pagos
@@ -868,7 +904,7 @@ app.post('/POSTpago', (req, res) => {
     [idEstudiante, idComprobante, monto, tipoPago, estado], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al agregar el pago');
+            res.status(500).json({ isSuccess: false, message:'Error al agregar el pago'});
             throw err;
         }
         res.status(201).json({ isSuccess: true, message: `Pago agregado con ID: ${results.insertId}`});
@@ -883,10 +919,14 @@ app.put('/PUTpago/:idPago', (req, res) => {
     [idEstudiante, idComprobante, monto, tipoPago, estado, idPago], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el pago');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el pago'});
             throw err;
         }
-        res.json('Pago actualizado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'pago no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Pago actualizado correctamente'});
+        }
     });
 });
 
@@ -895,20 +935,28 @@ app.delete('/DELETEpago/:idPago', (req, res) => {
 
     connection.query('DELETE FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar el pago');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
             throw err;
         }
-        res.json('Pago eliminado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'pago no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'pago eliminado correctamente'});
+        }
     });
 });
 
 app.get('/GETcomprobantePagos', (req, res) => {
     connection.query('SELECT * FROM ComprobantePago', (err, results) => {
         if (err) {
-            res.status(500).json('Error al obtener los comprobantes de pago');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
             throw err;
         }
-        res.json(results);
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Alumno eliminado correctamente'});
+        }
     });
 });
 
@@ -939,7 +987,7 @@ app.post('/POSTcomprobantePago', (req, res) => {
     [fechaEmision, detalles], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al agregar el comprobante de pago');
+            res.status(500).json({ isSuccess: false, message:'Error al agregar el comprobante de pago'});
             throw err;
         }
         res.status(201).json({ isSuccess: true, message: `Comprobante de pago agregado con ID: ${results.insertId}`});
@@ -954,10 +1002,14 @@ app.put('/PUTcomprobantePago/:idComprobante', (req, res) => {
     [fechaEmision, detalles, idComprobante], 
     (err, results) => {
         if (err) {
-            res.status(500).json('Error al actualizar el comprobante de pago');
+            res.status(500).json({ isSuccess: false, message:'Error al actualizar el comprobante'});
             throw err;
         }
-        res.json('Comprobante de pago actualizado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Comprobante no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Comprobante actualizado correctamente'});
+        }
     });
 });
 
@@ -966,10 +1018,14 @@ app.delete('/DELETEcomprobantePago/:idComprobante', (req, res) => {
 
     connection.query('DELETE FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
         if (err) {
-            res.status(500).json('Error al eliminar el comprobante de pago');
+            res.status(500).json({ isSuccess: false, message:'Error al eliminar el comprobante de pago'});
             throw err;
         }
-        res.json('Comprobante de pago eliminado correctamente');
+        if (results.affectedRows === 0) {
+            res.status(404).json({ isSuccess: false, message:'Comprobante de pago no encontrado'});
+        } else {
+            res.json({ isSuccess: true, message:'Comprobante de pago eliminado correctamente'});
+        }
     });
 });
 
