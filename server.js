@@ -87,16 +87,16 @@ app.put('/PUTdocente/:idDocente', (req, res) => {
 
     const query = `
         UPDATE docente
-        SET nombreDocente = ?, apellidoPaterno = ?, apellidoMaterno = ?, ciudad = ?, direccion = ?, tipoCargo = ?, dni = ?, fechaRegistro = ?
+        SET nombre = ?, apellidoPaterno = ?, apellidoMaterno = ?, ciudad = ?, direccion = ?, tipoCargo = ?, dni = ?, fechaRegistro = ?
         WHERE idDocente = ?
     `;
 
-    connection.query(query, [nombreDocente, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro, idDocente], (err, result) => {
+    connection.query(query, [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro, idDocente], (err, result) => {
         if (err) {
             res.status(500).json({ isSuccess: false, message:'Error al actualizar el docente'});
             throw err;
         }
-        if (results.affectedRows === 0) {
+        if (result.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Docente no encontrado'});
         } else {
             res.json({ isSuccess: true, message:'Docente actualizado correctamente'});
