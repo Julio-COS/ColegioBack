@@ -955,7 +955,7 @@ app.get('/GETcomprobantePagos', (req, res) => {
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
         } else {
-            res.json({ isSuccess: true, message:'Alumno eliminado correctamente'});
+            res.json(results);
         }
     });
 });
@@ -1028,6 +1028,35 @@ app.delete('/DELETEcomprobantePago/:idComprobante', (req, res) => {
         }
     });
 });
+//REPORTE
+
+app.get('/GETreporteAula/:idAula', (req, res) => {
+    const idAula = req.params.idAula;
+
+    const query = `
+    SELECT 
+    a.nombres as Nombre,
+    a.apePaterno as ApellidoPaterno,
+    a.apeMaterno as ApellidoMaterno
+    FROM alumno a
+    INNER JOIN matricula m ON a.idEstudiante = m.idEstudiante
+    INNER JOIN matriculavacancia mv ON m.idMVacancia = mv.idMVacancia
+    INNER JOIN aula au ON mv.idAula = au.idAula 
+    where au.idAula = ?`;
+    connection.query(query,[idAula], (err, results) => {
+        if (err) {
+            res.status(500).json('Error al obtener la Data');
+            throw err;
+        }
+        if (results.length === 0) {
+            res.status(404).json('Data no encontrado');
+        } else {
+            res.json(results);
+        }
+    });
+
+});
+
 
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
