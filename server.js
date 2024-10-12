@@ -39,7 +39,7 @@ app.get('/GETdocentes', (req, res) => {
     connection.query('SELECT * FROM docente', (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los docentes');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -51,7 +51,7 @@ app.get('/GETdocente/:idDocente', (req, res) => {
     connection.query('SELECT * FROM docente WHERE idDocente = ?', [idDocente], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener el docente');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Docente no encontrado');
@@ -69,12 +69,13 @@ app.post('/POSTdocente', (req, res) => {
     }
 
     connection.query(
-        'INSERT INTO Docente (nombre, apellidoMaterno, apellidoPaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO Docente (nombre, apellidoPaterno,apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar el docente'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el docente'});
+                
             }
             res.status(201).json({ isSuccess: true, message: `Docente agregado exitosamente con ID: ${results.insertId}`});
         }
@@ -93,8 +94,9 @@ app.put('/PUTdocente/:idDocente', (req, res) => {
 
     connection.query(query, [nombre, apellidoPaterno, apellidoMaterno, ciudad, direccion, tipoCargo, dni, fechaRegistro, idDocente], (err, result) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el docente'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar el docente'});
+            
         }
         if (result.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Docente no encontrado'});
@@ -109,10 +111,10 @@ app.delete('/DELETEdocente/:idDocente', (req, res) => {
 
     const query = `DELETE FROM docente WHERE idDocente = ?`;
 
-    connection.query(query, [idDocente], (err, result) => {
+    connection.query(query, [idDocente], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el docente'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al eliminar el docente'});
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Docente no encontrado'});
@@ -128,7 +130,7 @@ app.get('/GETaulas', (req, res) => {
     connection.query('SELECT * FROM aula', (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener las aulas');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -139,8 +141,8 @@ app.get('/GETaula/:idAula', (req, res) => {
 
     connection.query('SELECT * FROM aula WHERE idAula = ?', [idAula], (err, results) => {
         if (err) {
+            console.log(err);
             res.status(500).json('Error al obtener el aula');
-            throw err;
         }
         if (results.length === 0) {
             res.status(404).json('Aula no encontrada');
@@ -162,8 +164,8 @@ app.post('/POSTaula', (req, res) => {
         [seccion, nivel, gradoActual],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar aula'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar aula'});                
             }
             res.status(201).json({ isSuccess: true, message: `Aula agregada exitosamente con ID: ${results.insertId}`});
         }
@@ -186,8 +188,8 @@ app.put('/PUTaula/:idAula', (req, res) => {
 
     connection.query(query, [seccion, nivel, gradoActual, idAula], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el aula'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al actualizar el aula'});            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Aula no encontrado'});
@@ -204,8 +206,8 @@ app.delete('/DELETEaula/:idAula', (req, res) => {
 
     connection.query(query, [idAula], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el aula'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al eliminar el aula'});           
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Aula no encontrado'});
@@ -219,8 +221,8 @@ app.delete('/DELETEaula/:idAula', (req, res) => {
 app.get('/GETcursos', (req, res) => {
     connection.query('SELECT * FROM curso', (err, results) => {
         if (err) {
+            console.log(err);
             res.status(500).json('Error al obtener los cursos');
-            throw err;
         }
         res.json(results);
     });
@@ -233,7 +235,7 @@ app.get('/GETcurso/:idCurso', (req, res) => {
     connection.query(query,[idCurso], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los cursos');
-            throw err;
+            console.log(err);
         }
         res.json(results[0]);
     });
@@ -251,8 +253,8 @@ app.post('/POSTcurso', (req, res) => {
         [nombre, descripcion],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar curso'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar curso'});
             }
             res.status(201).json({ isSuccess: true, message: `Curso agregado exitosamente con ID: ${results.insertId}`});
         }
@@ -274,8 +276,8 @@ app.put('/PUTcurso/:idCurso', (req, res) => {
     
     connection.query(query, values, (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el curso'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al actualizar el curso'});
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Curso no encontrado'});
@@ -292,8 +294,9 @@ app.delete('/DELETEcurso/:idCurso', (req, res) => {
 
     connection.query(query, [idCurso], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el curso'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el curso'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Curso no encontrado'});
@@ -320,7 +323,7 @@ app.get('/GEThorarios', (req, res) => {
             INNER JOIN curso c ON h.idCurso = c.idCurso;`, (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los horarios');
-            throw err;
+            
         }   
         res.json(results);
     });
@@ -331,7 +334,7 @@ app.get('/GEThorario/:idHorario', (req, res) => {
     connection.query(`SELECT * FROM horario WHERE idHorario = ?`, [idHorario], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener el horario');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Horario no encontrado');
@@ -353,8 +356,9 @@ app.post('/POSThorario', (req, res) => {
         [idCurso, idDocente, idAula, Fecha_inicio, Fecha_final, hora_inicio, hora_final],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar el horario'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el horario'});
+                
             }
             res.status(201).json({ isSuccess: true, message: `Horario agregado exitosamente con ID: ${results.insertId}`});
         }
@@ -377,8 +381,9 @@ app.put('/PUThorario/:idHorario', (req, res) => {
 
     connection.query(query, [Fecha_inicio, Fecha_final, hora_inicio, hora_final, idCurso, idDocente, idAula, idHorario], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el horario'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar el horario'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Horario no encontrado'});
@@ -393,10 +398,11 @@ app.delete('/DELETEhorario/:idHorario', (req, res) => {
 
     const query = `DELETE FROM Horario WHERE idHorario = ?`;
 
-    connection.query(query, [idHorario], (err, result) => {
+    connection.query(query, [idHorario], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el horario'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el horario'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Horario no encontrado'});
@@ -411,7 +417,7 @@ app.get('/GETalumnos', (req, res) => {
     connection.query('SELECT * FROM alumno', (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los alumnos');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -429,8 +435,9 @@ app.post('/POSTalumno', (req, res) => {
         [nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar el alumno'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el alumno'});
+                
             }
             res.status(201).json({ isSuccess: true, message: `Alumno agregado exitosamente con ID: ${results.insertId}`});
         }
@@ -443,7 +450,7 @@ app.get('/GETalumno/:idEstudiante', (req, res) => {
     connection.query('SELECT * FROM alumno WHERE idEstudiante = ?', [idEstudiante], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener el alumno');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Alumno no encontrado');
@@ -471,8 +478,9 @@ app.put('/PUTalumno/:idEstudiante', (req, res) => {
 
     connection.query(query, [nombres, apeMaterno, apePaterno, dni, fechaRegistro, fechaNacimiento, genero, direccion, telefono, idEstudiante], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el alumno'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar el alumno'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
@@ -489,8 +497,9 @@ app.delete('/DELETEalumno/:idEstudiante', (req, res) => {
 
     connection.query(query, [idEstudiante], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el alumno'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el alumno'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
@@ -512,10 +521,12 @@ app.get('/GETmatriculas', (req, res) => {
             FROM matricula m 
             INNER JOIN matriculavacancia mv ON m.idMVacancia = mv.idMVacancia
             INNER JOIN alumno e ON m.idEstudiante = e.idEstudiante
-            INNER JOIN aula a ON mv.idAula = a.idAula;`, (err, results) => {
+            INNER JOIN aula a ON mv.idAula = a.idAula
+            ORDER BY m.idMatricula
+            `, (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener las matriculas');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -527,7 +538,7 @@ app.get('/GETmatricula/:idMatricula', (req, res) => {
     connection.query('SELECT * FROM matricula WHERE idMatricula = ?', [idMatricula], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener la matricula');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Matrícula no encontrada');
@@ -549,8 +560,9 @@ app.post('/POSTmatricula', (req, res) => {
         [idMVacancia, idEstudiante, fechaRegistro, estado],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar matricula'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar matricula'});
+                
             }
             res.status(201).json({ isSuccess: true, message: `Matricula agregado exitosamente con ID: ${results.insertId}`});
         }
@@ -570,8 +582,9 @@ app.put('/PUTmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMVacancia, idEstudiante, fechaRegistro, estado, idMatricula], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar matricula'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar matricula'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Matricula no encontrado'});
@@ -588,8 +601,9 @@ app.delete('/DELETEmatricula/:idMatricula', (req, res) => {
 
     connection.query(query, [idMatricula], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar la mnatricula'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar la mnatricula'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Matricula no encontrado'});
@@ -611,7 +625,7 @@ app.get('/GETmatriculaVacancias', (req, res) => {
             INNER JOIN aula a ON m.idAula = a.idAula`, (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los vacantes');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -623,7 +637,7 @@ app.get('/GETmatriculaVacancia/:idMVacancia', (req, res) => {
     connection.query('SELECT * FROM matriculaVacancia WHERE idMVacancia = ?', [idMVacancia], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener la matricula vacante');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Vacancia no encontrada');
@@ -645,8 +659,9 @@ app.post('/POSTmatriculaVacancia', (req, res) => {
         [idAula, disponibilidadActual, disponibilidadTotal],
         (err, results) => {
             if (err) {
-                res.status(500).json({ isSuccess: false, message:'Error al agregar el vacancia'});
-                throw err;
+                console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el vacancia'});
+                
             }
             res.status(201).json({ isSuccess: true, message: `Vacancia agregada exitosamente con ID: ${results.insertId}`});
         }
@@ -669,8 +684,9 @@ app.put('/PUTmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idAula, disponibilidadActual, disponibilidadTotal, idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar la vacancia'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar la vacancia'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Vacancia no encontrado'});
@@ -687,8 +703,9 @@ app.delete('/DELETEmatriculaVacancia/:idMVacancia', (req, res) => {
 
     connection.query(query, [idMVacancia], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el vacancia'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el vacancia'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Vacancia no encontrado'});
@@ -703,7 +720,7 @@ app.get('/GETapoderados', (req, res) => {
     connection.query('SELECT * FROM Apoderado', (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los apoderados');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -715,7 +732,7 @@ app.get('/GETapoderado/:idApoderado', (req, res) => {
     connection.query('SELECT * FROM Apoderado where idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener la relación de apoderado');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Relación de apoderado no encontrada');
@@ -736,8 +753,9 @@ app.post('/POSTapoderado', (req, res) => {
     [nombres, apellidoP, apellidoM, dni, telefono, direccion], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al agregar el apoderado'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el apoderado'});
+            
         }
         res.status(201).json({ isSuccess: true, message: `Apoderado agregado con ID: ${results.insertId}`});
     });
@@ -751,8 +769,9 @@ app.put('/PUTapoderado/:idApoderado', (req, res) => {
     [nombres, apellidoP, apellidoM, dni, telefono, direccion, idApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el apoderado'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar el apoderado'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Apoderado no encontrado'});
@@ -767,8 +786,9 @@ app.delete('/DELETEapoderado/:idApoderado', (req, res) => {
 
     connection.query('DELETE FROM Apoderado WHERE idApoderado = ?', [idApoderado], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el apoderado'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el apoderado'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Apoderado no encontrado'});
@@ -792,7 +812,7 @@ app.get('/GETrelacionApoderados', (req, res) => {
             (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener las relaciones de apoderado');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -804,7 +824,7 @@ app.get('/GETrelacionApoderado/:idRelacionApoderado', (req, res) => {
     connection.query('SELECT * FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener la relación de apoderado');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Relación de apoderado no encontrada');
@@ -825,8 +845,9 @@ app.post('/POSTrelacionApoderado', (req, res) => {
     [idEstudiante, idApoderado, tipoRelacion], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al agregar la relacion de apoderado'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar la relacion de apoderado'});
+            
         }
         res.status(201).json({ isSuccess: true, message: `Relación de apoderado agregada con ID: ${results.insertId}`});
     });
@@ -840,8 +861,9 @@ app.put('/PUTrelacionApoderado/:idRelacionApoderado', (req, res) => {
     [idEstudiante, idApoderado, tipoRelacion, idRelacionApoderado], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar la relacion de apoderado '});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar la relacion de apoderado '});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Relacion del apoderado no encontrado'});
@@ -856,8 +878,9 @@ app.delete('/DELETErelacionApoderado/:idRelacionApoderado', (req, res) => {
 
     connection.query('DELETE FROM RelacionApoderado WHERE idRelacionApoderado = ?', [idRelacionApoderado], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar la relacion del apoderado'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar la relacion del apoderado'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Relacion no encontrado'});
@@ -871,7 +894,7 @@ app.get('/GETpagos', (req, res) => {
     connection.query('SELECT * FROM Pago', (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener los pagos');
-            throw err;
+            
         }
         res.json(results);
     });
@@ -883,7 +906,7 @@ app.get('/GETpago/:idPago', (req, res) => {
     connection.query('SELECT * FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener el pago');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Pago no encontrado');
@@ -904,8 +927,9 @@ app.post('/POSTpago', (req, res) => {
     [idEstudiante, idComprobante, monto, tipoPago, estado], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al agregar el pago'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el pago'});
+            
         }
         res.status(201).json({ isSuccess: true, message: `Pago agregado con ID: ${results.insertId}`});
     });
@@ -919,8 +943,9 @@ app.put('/PUTpago/:idPago', (req, res) => {
     [idEstudiante, idComprobante, monto, tipoPago, estado, idPago], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el pago'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al actualizar el pago'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'pago no encontrado'});
@@ -935,8 +960,9 @@ app.delete('/DELETEpago/:idPago', (req, res) => {
 
     connection.query('DELETE FROM Pago WHERE idPago = ?', [idPago], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'pago no encontrado'});
@@ -949,8 +975,9 @@ app.delete('/DELETEpago/:idPago', (req, res) => {
 app.get('/GETcomprobantePagos', (req, res) => {
     connection.query('SELECT * FROM ComprobantePago', (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al eliminar el pago'});
+            
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Alumno no encontrado'});
@@ -966,7 +993,7 @@ app.get('/GETcomprobantePago/:idComprobante', (req, res) => {
     connection.query('SELECT * FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
         if (err) {
             res.status(500).json('Error al obtener el comprobante de pago');
-            throw err;
+            
         }
         if (results.length === 0) {
             res.status(404).json('Comprobante de pago no encontrado');
@@ -987,8 +1014,9 @@ app.post('/POSTcomprobantePago', (req, res) => {
     [fechaEmision, detalles], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al agregar el comprobante de pago'});
-            throw err;
+            console.log(err);
+                return res.status(500).json({ isSuccess: false, message:'Error al agregar el comprobante de pago'});
+            
         }
         res.status(201).json({ isSuccess: true, message: `Comprobante de pago agregado con ID: ${results.insertId}`});
     });
@@ -1002,8 +1030,8 @@ app.put('/PUTcomprobantePago/:idComprobante', (req, res) => {
     [fechaEmision, detalles, idComprobante], 
     (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al actualizar el comprobante'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al actualizar el comprobante'});
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Comprobante no encontrado'});
@@ -1018,8 +1046,8 @@ app.delete('/DELETEcomprobantePago/:idComprobante', (req, res) => {
 
     connection.query('DELETE FROM ComprobantePago WHERE idComprobante = ?', [idComprobante], (err, results) => {
         if (err) {
-            res.status(500).json({ isSuccess: false, message:'Error al eliminar el comprobante de pago'});
-            throw err;
+            console.log(err);
+            return res.status(500).json({ isSuccess: false, message:'Error al eliminar el comprobante de pago'});
         }
         if (results.affectedRows === 0) {
             res.status(404).json({ isSuccess: false, message:'Comprobante de pago no encontrado'});
@@ -1045,8 +1073,8 @@ app.get('/GETreporteAula/:idAula', (req, res) => {
     where au.idAula = ?`;
     connection.query(query,[idAula], (err, results) => {
         if (err) {
+            console.log(err);
             res.status(500).json('Error al obtener la Data');
-            throw err;
         }
         if (results.length === 0) {
             res.status(404).json('Data no encontrado');
